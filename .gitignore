@@ -1,0 +1,8 @@
+.vscode/*
+
+/target/*
+
+notes/*
+
+*.env
+!default-env.env
