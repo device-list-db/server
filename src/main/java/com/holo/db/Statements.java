@@ -235,7 +235,7 @@ public class Statements {
                 String deviceName = array[4];
                 if (owner.equals(ch.getUsername().orElse("")) || ch.getAdmin())
                     try {
-                        PreparedStatement ps = con.getConnection().get().prepareStatement("DELETE devices WHERE mac_address=? AND device_name=? AND owner=? AND serial_number=?");
+                        PreparedStatement ps = con.getConnection().get().prepareStatement("DELETE FROM devices WHERE mac_address=? AND device_name=? AND owner=? AND serial_number=?");
                         ps.setString(1, macAddress);
                         ps.setString(2, deviceName);
                         ps.setString(3, owner);
