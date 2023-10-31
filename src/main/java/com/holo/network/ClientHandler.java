@@ -55,6 +55,9 @@ public class ClientHandler implements Runnable {
             case "GET-DEVICES":
                 sendMessage(message, "Getting their devices");
                 break;
+            case "GET-ALL-DEVICES":
+                sendMessage(message, "Getting all devices");
+                break;
             case "ADMIN-RESPONSE":
                 sendMessage(message, "Checking if user " + messageArray[1] + " can preform admin actions while logged in.");
                 username = messageArray[1];
