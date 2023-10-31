@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.util.Optional;
 
 import com.holo.ServerMain;
-import com.holo.Talker;
+import com.holo.util.Talker;
 import com.holo.db.DBConnection;
 import com.holo.db.Statements;
 import com.holo.util.LoggerLevels;
