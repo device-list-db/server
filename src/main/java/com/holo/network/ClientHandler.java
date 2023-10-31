@@ -55,7 +55,7 @@ public class ClientHandler implements Runnable {
             case "GET-DEVICES":
                 sendMessage(message, "Getting their devices");
                 break;
-            case "GET-ALL-DEVICES":
+            case "GET-DEVICES-ALL":
                 sendMessage(message, "Getting all devices");
                 break;
             case "ADMIN-RESPONSE":
