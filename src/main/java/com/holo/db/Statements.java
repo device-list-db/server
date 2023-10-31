@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.holo.Talker;
+import com.holo.util.Talker;
 import com.holo.network.ClientHandler;
 import com.holo.util.FatalErrors;
 import com.holo.util.LoggerLevels;
