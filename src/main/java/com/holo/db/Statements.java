@@ -214,7 +214,7 @@ public class Statements {
                 String deviceSerial = array[2];
                 String macAddress = array[3];
                 String deviceName = array[4];
-                if (owner.equals(ch.getUsername()) || ch.getAdmin())
+                if (owner.equals(ch.getUsername().orElse("")) || ch.getAdmin())
                     try {
                         PreparedStatement ps = con.getConnection().get().prepareStatement("UPDATE devices SET mac_address=?, device_name=?, owner=? WHERE serial_number=?");
                         ps.setString(1, macAddress);
@@ -238,7 +238,7 @@ public class Statements {
                 String deviceSerial = array[2];
                 String macAddress = array[3];
                 String deviceName = array[4];
-                if (owner.equals(ch.getUsername()) || ch.getAdmin())
+                if (owner.equals(ch.getUsername().orElse("")) || ch.getAdmin())
                     try {
                         PreparedStatement ps = con.getConnection().get().prepareStatement("DELETE devices WHERE mac_address=? AND device_name=? AND owner=? AND serial_number=?");
                         ps.setString(1, macAddress);
