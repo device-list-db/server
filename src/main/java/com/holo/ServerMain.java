@@ -19,20 +19,24 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 /**
  * Main class for the server
+ * @since 0.1.0
+ * @version 0.1.0
  */
 public class ServerMain {
     private static final Logger logger = System.getLogger(ServerMain.class.getName());
     private static ArrayList<ClientHandler> clientList;
     private static DBConnection dbCon;
     private static ServerSocket ss;
+    /**
+     * Main function for the server
+     */
     public static void main( String[] args ) {
         logger.log(LoggerLevels.INFO, "Home Device Server application" );
 
-        
         clientList = new ArrayList<>();
 
         connectDatabase(Dotenv.configure().load());
-        serverLoop();
+        serverLoop(); // Server loop starts here
         logger.log(LoggerLevels.INFO, "Shutting down...");
         closeDatabaseConnection();
         logger.log(LoggerLevels.INFO, "Stopped");
@@ -62,6 +66,8 @@ public class ServerMain {
                 try {
                     Socket s = ss.accept();
                     if (!SystemStatements.IsIPBanned(dbCon, s.getLocalAddress().getHostAddress())) clientList.add(new ClientHandler(s, dbCon));
+                    s.getLocalAddress().getHostAddress();
+                    clientList.add(new ClientHandler(s, dbCon));
                 } catch (IOException e) {
                     logger.log(LoggerLevels.WARNING, "Connection reset by client");
                 } catch (SQLException e) {}

@@ -6,6 +6,8 @@ import java.util.Optional;
 
 /**
  * Server connection object, low level functions only
+ * @since 0.1.0
+ * @version 0.1.0
  */
 public class DBConnection {
     private Connection conn;
@@ -51,6 +53,10 @@ public class DBConnection {
         query.execute();
     }
 
+    /**
+     * Shutdown the server socket
+     * @throws SQLException If the socket was already closed
+     */
     public void shutdown() throws SQLException {
         if (conn != null) conn.close();
     }

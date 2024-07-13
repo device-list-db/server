@@ -1,5 +1,10 @@
 package com.holo.util;
 
+/**
+ * Various fatal errors of the server application
+ * @since 0.1.0
+ * @version 0.1.0
+ */
 public enum FatalErrors {
     PORT_TAKEN("Port 1997 is already in use by another application", 4),
     DATABASE_DRIVER("Database driver class was unable to be found.", 5),
