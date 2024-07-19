@@ -4,6 +4,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Various system statements needed for security
+ * @since 0.1.0
+ * @version 0.1.0
+ */
 public class SystemStatements {
     public static void BanIP(DBConnection con, String ip) throws SQLException {
         PreparedStatement ps = con.getConnection().get().prepareStatement("INSERT INTO `ipban` VALUES(?)");

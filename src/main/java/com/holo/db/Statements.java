@@ -11,6 +11,11 @@ import com.holo.network.ClientHandler;
 import com.holo.util.FatalErrors;
 import com.holo.util.LoggerLevels;
 
+/**
+ * Where all the SQL statements are stored, and how to handle each case from the client
+ * @since 0.1.0
+ * @version 0.1.0
+ */
 public class Statements {
     private static final Logger logger = System.getLogger(Statements.class.getName());
 

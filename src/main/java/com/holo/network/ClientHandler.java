@@ -11,6 +11,11 @@ import com.holo.db.DBConnection;
 import com.holo.db.Statements;
 import com.holo.util.LoggerLevels;
 
+/**
+ * How to handle messages from the client
+ * @since 0.1.0
+ * @version 0.1.0
+ */
 public class ClientHandler implements Runnable {
     private Talker talker;
     private DBConnection dbConn;
