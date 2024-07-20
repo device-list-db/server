@@ -1,3 +1,3 @@
 @ECHO off
-java -jar server-1.0.jar
+java -jar server-0.2.0.jar
 PAUSE
