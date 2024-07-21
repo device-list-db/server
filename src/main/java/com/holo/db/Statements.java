@@ -170,6 +170,64 @@ public class Statements {
                     return "KILL";
                 }
             }
+			case "GET-PEOPLE": {
+				try {
+					PreparedStatement ps1 = con.getConnection().get().prepareStatement("SELECT COUNT(*) FROM people");
+					ResultSet rs1 = ps1.executeQuery();
+					if (rs1.next())
+						talker.send("USER-TOTAL " + rs1.getInt(1));
+					else
+						talker.send("USER-TOTAL 0");
+					PreparedStatement ps = con.getConnection().get().prepareStatement("SELECT people.id, users.username, people.name FROM people LEFT JOIN users ON users.name_id = people.id;");
+					ResultSet rs = ps.executeQuery();
+					while (rs.next()) {
+						talker.send("USER-ID " + rs.getInt(1));
+						talker.send("USER-USERNAME " + rs.getString(2));
+						String name = rs.getString(3);
+						if (name.contains(" "))
+							name.replace(' ', '_');
+						talker.send("USER-NAME " + name);
+					}
+					return "USER-FINISH";
+				} catch (IOException | SQLException e) {
+					e.printStackTrace();
+					logger.log(LoggerLevels.WARNING, "Unable to get user info - killing client as a safeguard.");
+					return "KILL";
+				}
+			}
+			case "ADD-PERSON": {
+				try {
+					PreparedStatement ps = con.getConnection().get().prepareStatement("INSERT INTO people(`name`) VALUES (?)");
+					ps.setString(1, array[1]);
+					con.runQuery(ps);
+				} catch (SQLException e) {
+					e.printStackTrace();
+					logger.log(LoggerLevels.WARNING, "Unable to add a person to the database.");
+				}
+			}
+            case "GET-DEVICES-ALL": {
+                try {
+                    PreparedStatement ps1 = con.getConnection().get().prepareStatement("SELECT COUNT(*) FROM Devices");
+                    ResultSet rs1 = ps1.executeQuery();
+                    if (rs1.next())
+                        talker.send("DEVICE-TOTAL " + rs1.getInt(1));
+                    else
+                        talker.send("DEVICE TOTAL 0");
+                    PreparedStatement ps = con.getConnection().get().prepareStatement("SELECT * FROM Devices");
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) {
+                        talker.send("DEVICE-SERIAL " + rs.getString(1));
+                        talker.send("DEVICE-MAC " + rs.getString(2));
+                        talker.send("DEVICE-NAME " + rs.getString(3));
+                        talker.send("DEVICE-OWNER " + rs.getString(4));
+                    }
+                    return "DEVICE-FINISH";
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                    logger.log(LoggerLevels.WARNING, "Unable to get device information - killing client as a safeguard");
+                    return "KILL";
+                }
+            }
             case "ADMIN-RESPONSE": {
                 try {
                     PreparedStatement ps = con.getConnection().get().prepareStatement("SELECT is_admin FROM Users WHERE username = ?");
