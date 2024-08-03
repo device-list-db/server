@@ -45,6 +45,9 @@ public class ClientHandler implements Runnable {
             case "REGISTER":
                 sendMessage(message, "Registering a new account with the database");
                 break;
+            case "REGISTER-ACCOUNT":
+                sendMessage(message, "PRIVILEGE COMMAND: REGISTER-ACCOUNT used");
+                break;
             case "LOGIN":
                 sendMessage(message, "Attempting to log into the service. Account: " + messageArray[1]);
                 break;

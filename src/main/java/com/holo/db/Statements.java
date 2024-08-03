@@ -90,7 +90,7 @@ public class Statements {
                     ps.setString(2, array[2]); // Password
 
                     if (array.length > 4) // Name contains a space
-                        name = array[3] + " " + array[4];
+                        name = array[3] + "_" + array[4];
                     else // Name does not contain a space
                         name = array[3];
 
@@ -103,6 +103,37 @@ public class Statements {
                     con.runQuery(ps);
                     return "REGISTRATION-PASS"; // Succeeded
                 } catch(SQLException e) {
+                    e.printStackTrace();
+                    logger.log(LoggerLevels.ERROR, FatalErrors.DATABASE_UNSYNC);
+                    return "REGISTRATION-FAIL"; // DB error
+                }
+            }
+            case "REGISTER-ACCOUNT": {
+                try {
+                    String name;
+                    if (array.length > 4) // Name contains a space
+                        name = array[3] + "_" + array[4];
+                    else // Name does not contain a space
+                        name = array[3];
+                    PreparedStatement ps1 = con.getConnection().get().prepareStatement("SELECT `id` FROM people WHERE name=?");
+                    System.out.println("NAME: " + name);
+                    ps1.setString(1, name);
+                    ResultSet rs = con.returnResult(ps1).orElseThrow();
+                    rs.next();
+                    int id = rs.getInt(1);
+                    if (id == 0) {
+                        // Something went wrong - kill the client as a precaution
+                        return "KILL";
+                    }
+                    PreparedStatement ps = con.getConnection().get().prepareStatement("INSERT INTO `users` VALUES (?, ?, ?, ?, ?)");
+                    ps.setString(1, array[1]); // Username
+                    ps.setString(2, array[2]); // Password
+                    ps.setInt(3, id);
+                    ps.setBoolean(4, false); // isAdmin
+                    ps.setBoolean(5, false); // isBanned
+                    con.runQuery(ps);
+                    return "REGISTRATION-PASS"; // Succeeded
+                } catch (SQLException e) {
                     e.printStackTrace();
                     logger.log(LoggerLevels.ERROR, FatalErrors.DATABASE_UNSYNC);
                     return "REGISTRATION-FAIL"; // DB error
