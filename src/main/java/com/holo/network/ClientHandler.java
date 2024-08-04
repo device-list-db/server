@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.util.Optional;
 
 import com.holo.ServerMain;
-import com.holo.Talker;
+import com.holo.util.Talker;
 import com.holo.db.DBConnection;
 import com.holo.db.Statements;
 import com.holo.util.LoggerLevels;
@@ -45,6 +45,9 @@ public class ClientHandler implements Runnable {
             case "REGISTER":
                 sendMessage(message, "Registering a new account with the database");
                 break;
+            case "REGISTER-ACCOUNT":
+                sendMessage(message, "PRIVILEGE COMMAND: REGISTER-ACCOUNT used");
+                break;
             case "LOGIN":
                 sendMessage(message, "Attempting to log into the service. Account: " + messageArray[1]);
                 break;
@@ -60,6 +63,9 @@ public class ClientHandler implements Runnable {
             case "GET-DEVICES":
                 sendMessage(message, "Getting their devices");
                 break;
+            case "GET-DEVICES-ALL":
+                sendMessage(message, "Getting all devices");
+                break;
             case "ADMIN-RESPONSE":
                 sendMessage(message, "Checking if user " + messageArray[1] + " can preform admin actions while logged in.");
                 username = messageArray[1];
@@ -73,6 +79,12 @@ public class ClientHandler implements Runnable {
             case "DELETE-DEVICE":
                 sendMessage(message, messageArray[1] = " is deleting a device.");
                 break;
+			case "GET-PEOPLE":
+				sendMessage(message, "PRIVILEGE COMMAND: GET-PEOPLE ran");
+				break;
+			case "ADD-PERSON":
+				sendMessage(message, "PRIVILEGE COMMAND: ADD-PERSON ran");
+				break;
             default: // Illegal protocol message - kill the client
                 sendMessage("KILL", "Sent unrecgonized command '" + messageArray[0] + "'- Killing client");
                 ServerMain.clientDisconnect(this);

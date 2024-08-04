@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.holo.Talker;
+import com.holo.util.Talker;
 import com.holo.network.ClientHandler;
 import com.holo.util.FatalErrors;
 import com.holo.util.LoggerLevels;
@@ -90,7 +90,7 @@ public class Statements {
                     ps.setString(2, array[2]); // Password
 
                     if (array.length > 4) // Name contains a space
-                        name = array[3] + " " + array[4];
+                        name = array[3] + "_" + array[4];
                     else // Name does not contain a space
                         name = array[3];
 
@@ -103,6 +103,37 @@ public class Statements {
                     con.runQuery(ps);
                     return "REGISTRATION-PASS"; // Succeeded
                 } catch(SQLException e) {
+                    e.printStackTrace();
+                    logger.log(LoggerLevels.ERROR, FatalErrors.DATABASE_UNSYNC);
+                    return "REGISTRATION-FAIL"; // DB error
+                }
+            }
+            case "REGISTER-ACCOUNT": {
+                try {
+                    String name;
+                    if (array.length > 4) // Name contains a space
+                        name = array[3] + "_" + array[4];
+                    else // Name does not contain a space
+                        name = array[3];
+                    PreparedStatement ps1 = con.getConnection().get().prepareStatement("SELECT `id` FROM people WHERE name=?");
+                    System.out.println("NAME: " + name);
+                    ps1.setString(1, name);
+                    ResultSet rs = con.returnResult(ps1).orElseThrow();
+                    rs.next();
+                    int id = rs.getInt(1);
+                    if (id == 0) {
+                        // Something went wrong - kill the client as a precaution
+                        return "KILL";
+                    }
+                    PreparedStatement ps = con.getConnection().get().prepareStatement("INSERT INTO `users` VALUES (?, ?, ?, ?, ?)");
+                    ps.setString(1, array[1]); // Username
+                    ps.setString(2, array[2]); // Password
+                    ps.setInt(3, id);
+                    ps.setBoolean(4, false); // isAdmin
+                    ps.setBoolean(5, false); // isBanned
+                    con.runQuery(ps);
+                    return "REGISTRATION-PASS"; // Succeeded
+                } catch (SQLException e) {
                     e.printStackTrace();
                     logger.log(LoggerLevels.ERROR, FatalErrors.DATABASE_UNSYNC);
                     return "REGISTRATION-FAIL"; // DB error
@@ -156,6 +187,64 @@ public class Statements {
                         talker.send("DEVICE-TOTAL 0");
                     PreparedStatement ps = con.getConnection().get().prepareStatement("SELECT * FROM Devices WHERE owner = ?");
                     ps.setString(1, array[1]);
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) {
+                        talker.send("DEVICE-SERIAL " + rs.getString(1));
+                        talker.send("DEVICE-MAC " + rs.getString(2));
+                        talker.send("DEVICE-NAME " + rs.getString(3));
+                        talker.send("DEVICE-OWNER " + rs.getString(4));
+                    }
+                    return "DEVICE-FINISH";
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                    logger.log(LoggerLevels.WARNING, "Unable to get device information - killing client as a safeguard");
+                    return "KILL";
+                }
+            }
+			case "GET-PEOPLE": {
+				try {
+					PreparedStatement ps1 = con.getConnection().get().prepareStatement("SELECT COUNT(*) FROM people");
+					ResultSet rs1 = ps1.executeQuery();
+					if (rs1.next())
+						talker.send("USER-TOTAL " + rs1.getInt(1));
+					else
+						talker.send("USER-TOTAL 0");
+					PreparedStatement ps = con.getConnection().get().prepareStatement("SELECT people.id, users.username, people.name FROM people LEFT JOIN users ON users.name_id = people.id;");
+					ResultSet rs = ps.executeQuery();
+					while (rs.next()) {
+						talker.send("USER-ID " + rs.getInt(1));
+						talker.send("USER-USERNAME " + rs.getString(2));
+						String name = rs.getString(3);
+						if (name.contains(" "))
+							name.replace(' ', '_');
+						talker.send("USER-NAME " + name);
+					}
+					return "USER-FINISH";
+				} catch (IOException | SQLException e) {
+					e.printStackTrace();
+					logger.log(LoggerLevels.WARNING, "Unable to get user info - killing client as a safeguard.");
+					return "KILL";
+				}
+			}
+			case "ADD-PERSON": {
+				try {
+					PreparedStatement ps = con.getConnection().get().prepareStatement("INSERT INTO people(`name`) VALUES (?)");
+					ps.setString(1, array[1]);
+					con.runQuery(ps);
+				} catch (SQLException e) {
+					e.printStackTrace();
+					logger.log(LoggerLevels.WARNING, "Unable to add a person to the database.");
+				}
+			}
+            case "GET-DEVICES-ALL": {
+                try {
+                    PreparedStatement ps1 = con.getConnection().get().prepareStatement("SELECT COUNT(*) FROM Devices");
+                    ResultSet rs1 = ps1.executeQuery();
+                    if (rs1.next())
+                        talker.send("DEVICE-TOTAL " + rs1.getInt(1));
+                    else
+                        talker.send("DEVICE TOTAL 0");
+                    PreparedStatement ps = con.getConnection().get().prepareStatement("SELECT * FROM Devices");
                     ResultSet rs = ps.executeQuery();
                     while (rs.next()) {
                         talker.send("DEVICE-SERIAL " + rs.getString(1));
@@ -240,7 +329,7 @@ public class Statements {
                 String deviceName = array[4];
                 if (owner.equals(ch.getUsername().orElse("")) || ch.getAdmin())
                     try {
-                        PreparedStatement ps = con.getConnection().get().prepareStatement("DELETE devices WHERE mac_address=? AND device_name=? AND owner=? AND serial_number=?");
+                        PreparedStatement ps = con.getConnection().get().prepareStatement("DELETE FROM devices WHERE mac_address=? AND device_name=? AND owner=? AND serial_number=?");
                         ps.setString(1, macAddress);
                         ps.setString(2, deviceName);
                         ps.setString(3, owner);

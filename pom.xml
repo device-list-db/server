@@ -6,7 +6,7 @@
 
   <groupId>com.holo</groupId>
   <artifactId>server</artifactId>
-  <version>1.0</version>
+  <version>0.2.0</version>
 
   <name>HOLO server</name>
   <!-- FIXME change it to the project's website -->
@@ -22,18 +22,13 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>4.13.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
      <groupId>mysql</groupId>
      <artifactId>mysql-connector-java</artifactId>
      <version>8.0.30</version>
-    </dependency>
-    <dependency>
-      <groupId>com.holo</groupId>
-      <artifactId>global</artifactId>
-      <version>1.0</version>
     </dependency>
     <dependency>
       <groupId>io.github.cdimascio</groupId>
