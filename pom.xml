@@ -6,11 +6,11 @@
 
   <groupId>com.holo</groupId>
   <artifactId>server</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
 
   <name>HOLO server</name>
   <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <url>https://github.com/device-list-db/server</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
