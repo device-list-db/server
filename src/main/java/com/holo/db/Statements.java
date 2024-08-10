@@ -51,6 +51,13 @@ public class Statements {
             }
             case "LOGIN": {
                 try {
+                    PreparedStatement ps1 = con.getConnection().get().prepareStatement("SELECT * FROM ipban WHERE ip_address = ?");
+                    ps1.setString(1, ch.getIp());
+                    ResultSet rs1 = con.returnResult(ps1).orElseThrow();
+                    if (rs1.next()) {
+                        logger.log(LoggerLevels.WARNING, ch.getIp() + " has tried to log in, when their IP is banned.");
+                        throw new SQLException("Banned IP");
+                    }
                     PreparedStatement ps = con.getConnection().get().prepareStatement("SELECT password, banned FROM users WHERE username = ?");
                     ps.setString(1, array[1]);
                     ResultSet rs = con.returnResult(ps).orElseThrow();
