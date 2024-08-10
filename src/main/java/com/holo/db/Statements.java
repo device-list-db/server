@@ -218,9 +218,11 @@ public class Statements {
 					PreparedStatement ps = con.getConnection().get().prepareStatement("INSERT INTO people(`name`) VALUES (?)");
 					ps.setString(1, array[1]);
 					con.runQuery(ps);
+                    return "ADD-PERSON-OK";
 				} catch (SQLException e) {
 					e.printStackTrace();
 					logger.log(LoggerLevels.WARNING, "Unable to add a person to the database.");
+                    return "ADD-PERSON-NO";
 				}
 			}
             case "GET-DEVICES-ALL": {
