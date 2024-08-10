@@ -57,9 +57,6 @@ public class ClientHandler implements Runnable {
             case "ADMIN-LOGIN":
                 sendMessage(message, "Attempting to authorize a new account. Account: " + messageArray[1]);
                 break;
-            case "DEVICE-REGISTER":
-                sendMessage(message, "Registering a new device in the DB");
-                break;
             case "GET-DEVICES":
                 sendMessage(message, "Getting their devices");
                 break;

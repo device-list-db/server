@@ -51,6 +51,13 @@ public class Statements {
             }
             case "LOGIN": {
                 try {
+                    PreparedStatement ps1 = con.getConnection().get().prepareStatement("SELECT * FROM ipban WHERE ip_address = ?");
+                    ps1.setString(1, ch.getIp());
+                    ResultSet rs1 = con.returnResult(ps1).orElseThrow();
+                    if (rs1.next()) {
+                        logger.log(LoggerLevels.WARNING, ch.getIp() + " has tried to log in, when their IP is banned.");
+                        throw new SQLException("Banned IP");
+                    }
                     PreparedStatement ps = con.getConnection().get().prepareStatement("SELECT password, banned FROM users WHERE username = ?");
                     ps.setString(1, array[1]);
                     ResultSet rs = con.returnResult(ps).orElseThrow();
@@ -139,19 +146,6 @@ public class Statements {
                     return "REGISTRATION-FAIL"; // DB error
                 }
             }
-            case "DEVICE-REGISTER": {
-                try {
-                    PreparedStatement ps = con.getConnection().get().prepareStatement("INSERT INTO `devices` VALUES (?, ?, ?, ?)");
-                    ps.setString(1, array[1]);
-                    ps.setString(2, array[2]);
-                    ps.setString(3, array[3]);
-                    ps.setString(4, array[4]);
-                    con.runQuery(ps);
-                    return "D-REGISTRATION-PASS";
-                } catch (SQLException e) {
-                    return "D-REGISTRATION-FAIL";
-                }
-            }
             case "DEBT-REGISTER": {
                 try{
                     PreparedStatement ps = con.getConnection().get().prepareStatement("INSERT INTO `debt`(`debtor_id`, `debtee_id`, `amount`, `memo`) VALUES (?, ?, ?, ?)");
@@ -231,9 +225,11 @@ public class Statements {
 					PreparedStatement ps = con.getConnection().get().prepareStatement("INSERT INTO people(`name`) VALUES (?)");
 					ps.setString(1, array[1]);
 					con.runQuery(ps);
+                    return "ADD-PERSON-OK";
 				} catch (SQLException e) {
 					e.printStackTrace();
 					logger.log(LoggerLevels.WARNING, "Unable to add a person to the database.");
+                    return "ADD-PERSON-NO";
 				}
 			}
             case "GET-DEVICES-ALL": {
@@ -285,11 +281,12 @@ public class Statements {
                 String macAddress = array[3];
                 String deviceName = array[4];
                 try {
-                    PreparedStatement ps = con.getConnection().get().prepareStatement("INSERT INTO `devices` VALUES (?, ?, ?, ?)");
+                    PreparedStatement ps = con.getConnection().get().prepareStatement("INSERT INTO `devices` VALUES (?, ?, ?, ?, ?)");
                     ps.setString(1, deviceSerial);
                     ps.setString(2, macAddress);
                     ps.setString(3, deviceName);
                     ps.setString(4, owner);
+                    ps.setBoolean(5, false);
                     con.runQuery(ps);
                     return "DEVICE-YES";
                 } catch (SQLException e) {
