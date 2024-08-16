@@ -14,7 +14,7 @@ import com.holo.util.LoggerLevels;
 /**
  * How to handle messages from the client
  * @since 0.1.0
- * @version 0.1.0
+ * @version 0.3.0
  */
 public class ClientHandler implements Runnable {
     private Talker talker;

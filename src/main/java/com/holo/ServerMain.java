@@ -11,6 +11,7 @@ import java.util.Properties;
 import com.holo.db.DBConnection;
 import com.holo.db.SystemStatements;
 import com.holo.network.ClientHandler;
+import com.holo.util.ConsoleCommands;
 import com.holo.util.FatalErrors;
 import com.holo.util.LoggerLevels;
 
@@ -60,6 +61,12 @@ public class ServerMain {
     }
 
     private static void serverLoop() {
+        String cmd;
+        logger.log(LoggerLevels.INFO, "Insert console commands");
+        do {
+            cmd = System.console().readLine();
+            System.out.println(ConsoleCommands.intrepretCommand(cmd, dbCon));
+        } while (!cmd.equalsIgnoreCase("start"));
         if (ss != null) {
             logger.log(LoggerLevels.INFO, "Accepting new connections");
             do {
