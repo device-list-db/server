@@ -5,6 +5,7 @@ import java.lang.System.Logger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 import com.holo.util.Talker;
 import com.holo.network.ClientHandler;
@@ -220,6 +221,19 @@ public class Statements {
 					return "KILL";
 				}
 			}
+			case "GET-PERSON": {
+				try {
+					PreparedStatement ps = con.getConnection().get().prepareStatement("SELECT id FROM people WHERE name = ?");
+					ps.setString(1, array[1]);
+					ResultSet rs = con.returnResult(ps).get();
+					if (rs.next())
+						return "PERSON-ID " + rs.getString(1);
+					else
+						return "PERSON-ID -1";
+				} catch (SQLException e) {
+					
+				}
+			}
 			case "ADD-PERSON": {
 				try {
 					PreparedStatement ps = con.getConnection().get().prepareStatement("INSERT INTO people(`name`) VALUES (?)");
@@ -343,6 +357,103 @@ public class Statements {
                     return "DEVICE-DELETE-NO";
                 }
             }
+			case "GET-AUTHOR-ID": {
+				try {
+					PreparedStatement ps = con.getConnection().get().prepareStatement("SELECT * FROM authors WHERE name=?");
+					ps.setString(1, array[1]);
+					ResultSet rs = con.returnResult(ps).get();
+					if (rs.next()) {
+						return String.valueOf(rs.getInt(1));
+					} else {
+						return "-1";
+					}
+				} catch (SQLException e) {
+					return "-1";
+				}
+			}
+			case "ADD-AUTHOR": {
+				try {
+					PreparedStatement ps = con.getConnection().get().prepareStatement("INSERT INTO authors(name) VALUES (?)");
+					ps.setString(1, array[1]);
+					con.runQuery(ps);
+					return "ADD-AUTHOR-SUCCESS";
+				} catch (SQLException e) {
+					return "ADD-AUTHOR-FAILURE";
+				}
+			}
+			case "REGISTER-BOOK": {
+				try {
+					PreparedStatement ps = con.getConnection().get().prepareStatement("INSERT INTO books VALUES (?, ?, ?, ?)");
+					ps.setString(1, array[1]);
+					ps.setInt(2, Integer.parseInt(array[3]));
+					ps.setString(3, array[4]);
+					ps.setString(4, array[2]);
+					con.runQuery(ps);
+					return "ADD-BOOK-SUCCESS";
+				} catch (SQLException e) {
+					return "ADD-BOOK-FAILURE";
+				}
+			}
+			case "GET-BOOKS": {
+				try {
+					PreparedStatement ps1 = con.getConnection().get().prepareStatement("SELECT COUNT(*) FROM Books");
+					ResultSet rs1 = con.returnResult(ps1).get();
+					if (rs1.next()) {
+						talker.send("BOOK-TOTAL " + rs1.getInt(1));
+					} else {
+						talker.send("BOOK-TOTAL 0");
+					}
+					PreparedStatement ps2 = con.getConnection().get().prepareStatement("SELECT authors.name AS 'Author Name', books.name AS 'Book Name', books.isbn, books.book_id FROM authors, books WHERE books.author_id = authors.author_id;");
+					ResultSet rs2 = con.returnResult(ps2).get();
+					while (rs2.next()) {
+						talker.send("BOOK-TITLE " + rs2.getString(2));
+						talker.send("BOOK-AUTHOR " + rs2.getString(1));
+						talker.send("BOOK-ISBN " + rs2.getString(3));
+						talker.send("BOOK-ID " + rs2.getString(4));
+						PreparedStatement ps3 = con.getConnection().get().prepareStatement("SELECT people.id, people.name, bookrentals.due_date FROM people, bookrentals, books WHERE books.book_id = bookrentals.book_id AND bookrentals.rentor = people.id AND books.book_id = ? AND bookrentals.returned = 0;");
+						ps3.setString(1, rs2.getString(4));
+						ResultSet rs3 = con.returnResult(ps3).get();
+						if (rs3.next()) {
+							talker.send("BOOK-MORE");
+							talker.send("USER-NAME " + rs3.getString(2));
+							talker.send("USER-ID " + rs3.getString(1));
+							talker.send("BOOK-DUE " + rs3.getTimestamp(3).toLocalDateTime().toString());
+						} else {
+							talker.send("BOOK-NEXT");
+						}
+					}
+					return "BOOK-FINISH";
+				} catch (IOException | SQLException e) {
+					return "BOOK-FINISH";
+				}
+			}
+			case "RENT-BOOK": {
+                LocalDate ldt = LocalDate.now();
+                LocalDate dueTime = ldt.plusWeeks(2);
+				try {
+					PreparedStatement ps1 = con.getConnection().get().prepareStatement("INSERT INTO bookrentals(book_id, rentor, rented_date, due_date) VALUES (?, ?, ?, ?)");
+					ps1.setString(1, array[1]);
+					ps1.setInt(2, Integer.parseInt(array[2]));
+					ps1.setString(3, ldt.toString());
+					ps1.setString(4, dueTime.toString());
+					con.runQuery(ps1);
+				} catch (SQLException e) {
+					return "NULL";
+				}
+				return "RENT-BOOK-SUCCESS";
+			}
+			case "UNRENT-BOOK": {
+				LocalDate ld = LocalDate.now();
+				try {
+					PreparedStatement ps1 = con.getConnection().get().prepareStatement("UPDATE bookrentals SET returned=1, return_date=? WHERE book_id=? AND returned=0");
+                    ps1.setString(1, ld.toString());
+					ps1.setString(2, array[1]);
+					con.runQuery(ps1);
+					return "UNRENT-BOOK-SUCCESS";
+				} catch (SQLException e) {
+					return "UNRENT-BOOK-FAILURE";
+				}
+			}
         }
         return "KILL"; // Default stance - kill client
     }

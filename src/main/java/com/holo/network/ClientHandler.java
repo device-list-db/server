@@ -82,6 +82,27 @@ public class ClientHandler implements Runnable {
 			case "ADD-PERSON":
 				sendMessage(message, "PRIVILEGE COMMAND: ADD-PERSON ran");
 				break;
+			case "GET-AUTHOR-ID":
+				sendMessage(message, "Getting an author ID");
+				break;
+			case "ADD-AUTHOR":
+				sendMessage(message, "Creating an author in the system.");
+				break;
+			case "REGISTER-BOOK":
+				sendMessage(message, "Registering a book.");
+				break;
+			case "GET-BOOKS":
+				sendMessage(message, "Getting the list of books.");
+				break;
+			case "GET-PERSON":
+				sendMessage(message, "Getting a single person");
+				break;
+			case "RENT-BOOK":
+				sendMessage(message, "Renting a book");
+				break;
+			case "UNRENT-BOOK":
+				sendMessage(message, "Returning a book");
+				break;
             default: // Illegal protocol message - kill the client
                 sendMessage("KILL", "Sent unrecgonized command '" + messageArray[0] + "'- Killing client");
                 ServerMain.clientDisconnect(this);
