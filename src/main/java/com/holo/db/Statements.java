@@ -124,7 +124,6 @@ public class Statements {
                     else // Name does not contain a space
                         name = array[3];
                     PreparedStatement ps1 = con.getConnection().get().prepareStatement("SELECT `id` FROM people WHERE name=?");
-                    System.out.println("NAME: " + name);
                     ps1.setString(1, name);
                     ResultSet rs = con.returnResult(ps1).orElseThrow();
                     rs.next();
