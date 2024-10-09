@@ -39,17 +39,6 @@ public class Statements {
     public static String craftResponse(String what, DBConnection con, Talker talker, ClientHandler ch) {
         String[] array = what.split(" ");
         switch(array[0]) {
-            case "COUNT-ADMIN": {
-            logger.log(LoggerLevels.WARNING, "COUNT-ADMIN recieved - Deprecated system call. Look into why it was used.");
-                try {
-                    PreparedStatement ps = con.getConnection().get().prepareStatement("SELECT COUNT(*) FROM users WHERE is_admin = true");
-                    ResultSet rs = con.returnResult(ps).orElseThrow();
-                    rs.next();
-                    return "ADMIN-TOTAL " + Integer.toString(rs.getInt(1)); // Get the total amount of admin users
-                } catch (SQLException e) {
-                    return "ADMIN-TOTAL 0"; // Return the default if no database was found
-                }
-            }
             case "LOGIN": {
                 try {
                     PreparedStatement ps1 = con.getConnection().get().prepareStatement("SELECT * FROM ipban WHERE ip_address = ?");
@@ -75,19 +64,6 @@ public class Statements {
             case "LOG": {
                 logger.log(LoggerLevels.INFO, array[2] + " has logged in.");
                 return "LOG-YES";
-            }
-            case "ADMIN-LOGIN": {
-            logger.log(LoggerLevels.WARNING, "ADMIN-LOGIN recieved - Deprecated system call. Look into why it was used.");
-                try {
-                    PreparedStatement ps = con.getConnection().get().prepareStatement("SELECT password FROM users WHERE username = ? AND is_admin = ?");
-                    ps.setString(1, array[1]);
-                    ps.setBoolean(2, true);
-                    ResultSet rs = con.returnResult(ps).orElseThrow();
-                    rs.next();
-                    return "ADMIN-PASS " + rs.getString(1);
-                } catch (SQLException e) {
-                    return "ADMIN-PASS NULL";
-                }
             }
             case "REGISTER": {
                 try {

@@ -39,9 +39,6 @@ public class ClientHandler implements Runnable {
     private void messageHandler(String message) throws IOException {
         String[] messageArray = message.split(" ");
         switch(messageArray[0]) {
-            case "COUNT-ADMIN":
-                sendMessage(messageArray[0], "Retrieving total amount of admin users");
-                break;
             case "REGISTER":
                 sendMessage(message, "Registering a new account with the database");
                 break;
@@ -53,9 +50,6 @@ public class ClientHandler implements Runnable {
                 break;
             case "LOG":
                 sendMessage(message, messageArray[1]);
-                break;
-            case "ADMIN-LOGIN":
-                sendMessage(message, "Attempting to authorize a new account. Account: " + messageArray[1]);
                 break;
             case "GET-DEVICES":
                 sendMessage(message, "Getting their devices");
