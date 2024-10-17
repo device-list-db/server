@@ -14,7 +14,7 @@ import com.holo.util.LoggerLevels;
 /**
  * How to handle messages from the client
  * @since 0.1.0
- * @version 0.1.0
+ * @version 0.3.0
  */
 public class ClientHandler implements Runnable {
     private Talker talker;
@@ -39,9 +39,6 @@ public class ClientHandler implements Runnable {
     private void messageHandler(String message) throws IOException {
         String[] messageArray = message.split(" ");
         switch(messageArray[0]) {
-            case "COUNT-ADMIN":
-                sendMessage(messageArray[0], "Retrieving total amount of admin users");
-                break;
             case "REGISTER":
                 sendMessage(message, "Registering a new account with the database");
                 break;
@@ -53,12 +50,6 @@ public class ClientHandler implements Runnable {
                 break;
             case "LOG":
                 sendMessage(message, messageArray[1]);
-                break;
-            case "ADMIN-LOGIN":
-                sendMessage(message, "Attempting to authorize a new account. Account: " + messageArray[1]);
-                break;
-            case "DEVICE-REGISTER":
-                sendMessage(message, "Registering a new device in the DB");
                 break;
             case "GET-DEVICES":
                 sendMessage(message, "Getting their devices");
@@ -84,6 +75,27 @@ public class ClientHandler implements Runnable {
 				break;
 			case "ADD-PERSON":
 				sendMessage(message, "PRIVILEGE COMMAND: ADD-PERSON ran");
+				break;
+			case "GET-AUTHOR-ID":
+				sendMessage(message, "Getting an author ID");
+				break;
+			case "ADD-AUTHOR":
+				sendMessage(message, "Creating an author in the system.");
+				break;
+			case "REGISTER-BOOK":
+				sendMessage(message, "Registering a book.");
+				break;
+			case "GET-BOOKS":
+				sendMessage(message, "Getting the list of books.");
+				break;
+			case "GET-PERSON":
+				sendMessage(message, "Getting a single person");
+				break;
+			case "RENT-BOOK":
+				sendMessage(message, "Renting a book");
+				break;
+			case "UNRENT-BOOK":
+				sendMessage(message, "Returning a book");
 				break;
             default: // Illegal protocol message - kill the client
                 sendMessage("KILL", "Sent unrecgonized command '" + messageArray[0] + "'- Killing client");
