@@ -6,7 +6,7 @@
 
   <groupId>com.holo</groupId>
   <artifactId>server</artifactId>
-  <version>0.3.0</version>
+  <version>0.4.0</version>
 
   <name>HOLO server</name>
   <!-- FIXME change it to the project's website -->
