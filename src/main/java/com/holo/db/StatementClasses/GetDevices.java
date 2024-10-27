@@ -14,13 +14,12 @@ public class GetDevices implements Statement {
     private DBConnection con;
     private Talker talker;
     private String[] array;
-    private Logger logger;
+    private final Logger logger = System.getLogger(GetDevices.class.getName());;
 
-    public GetDevices(DBConnection con, Talker talker, String[] array, Logger logger) {
+    public GetDevices(DBConnection con, Talker talker, String[] array) {
         this.con = con;
         this.talker = talker;
         this.array = array;
-        this.logger = logger;
     }
     
     public String run() {

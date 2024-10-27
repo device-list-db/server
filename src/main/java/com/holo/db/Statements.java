@@ -1,7 +1,5 @@
 package com.holo.db;
 
-import java.lang.System.Logger;
-
 import com.holo.util.Talker;
 import com.holo.db.StatementClasses.AddAuthor;
 import com.holo.db.StatementClasses.AddPerson;
@@ -24,15 +22,13 @@ import com.holo.db.StatementClasses.RentBook;
 import com.holo.db.StatementClasses.UnrentBook;
 import com.holo.db.StatementClasses.UpdateDevice;
 import com.holo.network.ClientHandler;
-import com.holo.util.LoggerLevels;
 
 /**
  * Where all the SQL statements are stored, and how to handle each case from the client
  * @since 0.1.0
- * @version 0.3.0
+ * @version 0.4.0
  */
 public class Statements {
-    private static final Logger logger = System.getLogger(Statements.class.getName());
 
     /**
      * Allow the server to craft the required response to the client
@@ -43,38 +39,33 @@ public class Statements {
         String[] array = what.split(" ");
         switch(array[0]) {
             case "LOGIN":
-                return new Login(con, ch, array, logger).run();
-            case "LOG": {
-                logger.log(LoggerLevels.WARNING, "This is a deprecated system call - Find out why it is used");
-                logger.log(LoggerLevels.INFO, array[2] + " has logged in.");
-                return "LOG-YES";
-            }
+                return new Login(con, ch, array).run();
             case "REGISTER":
-                return new Register(con, array, logger).run();
+                return new Register(con, array).run();
             case "REGISTER-ACCOUNT":
-                return new RegisterAccount(con, array, logger).run();
+                return new RegisterAccount(con, array).run();
             case "DEBT-REGISTER":
                 return new DebtRegister(con, array).run();
             case "DEBT-UPDATE":
                 return new DebtUpdate(con, array).run();
             case "GET-DEVICES":
-                return new GetDevices(con, talker, array, logger).run();
+                return new GetDevices(con, talker, array).run();
 			case "GET-PEOPLE": 
-				return new GetPeople(con, talker, logger).run();
+				return new GetPeople(con, talker).run();
 			case "GET-PERSON":
-				return new GetPerson(con, array, logger).run();
+				return new GetPerson(con, array).run();
 			case "ADD-PERSON":
-				return new AddPerson(con, array, logger).run();
+				return new AddPerson(con, array).run();
             case "GET-DEVICES-ALL":
-                return new GetDevicesAll(con, talker, logger).run();
+                return new GetDevicesAll(con, talker).run();
             case "ADMIN-RESPONSE":
-                return new AdminResponse(con, ch, array, logger).run();
+                return new AdminResponse(con, ch, array).run();
             case "REGISTER-DEVICE":
-                return new RegisterDevice(con, array, logger).run();
+                return new RegisterDevice(con, array).run();
             case "UPDATE-DEVICE":
-                return new UpdateDevice(con, array, ch, logger).run();
+                return new UpdateDevice(con, array, ch).run();
             case "DELETE-DEVICE":
-                return new DeleteDevice(con, array, ch, logger).run();
+                return new DeleteDevice(con, array, ch).run();
 			case "GET-AUTHOR-ID":
 				return new GetAuthorId(con, array).run();
 			case "ADD-AUTHOR":

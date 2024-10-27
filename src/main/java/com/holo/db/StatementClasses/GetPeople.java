@@ -13,12 +13,11 @@ import com.holo.util.Talker;
 public class GetPeople implements Statement {
     private DBConnection con;
     private Talker talker;
-    private Logger logger;
+    private final Logger logger = System.getLogger(GetPeople.class.getName());;
 
-    public GetPeople(DBConnection con, Talker talker, Logger logger) {
+    public GetPeople(DBConnection con, Talker talker) {
         this.con = con;
         this.talker = talker;
-        this.logger = logger;
     }
 
     public String run() {

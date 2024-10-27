@@ -12,12 +12,11 @@ import com.holo.util.LoggerLevels;
 public class Register implements Statement {
     private DBConnection con;
     private String[] array;
-    private Logger logger;
+    private final Logger logger = System.getLogger(Register.class.getName());;
 
-    public Register(DBConnection con, String[] array, Logger logger) {
+    public Register(DBConnection con, String[] array) {
         this.con = con;
         this.array = array;
-        this.logger = logger;
     }
 
     private int personId(DBConnection con, String name) {

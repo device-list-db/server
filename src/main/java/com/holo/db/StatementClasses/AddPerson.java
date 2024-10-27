@@ -10,12 +10,11 @@ import com.holo.util.LoggerLevels;
 public class AddPerson implements Statement {
     private DBConnection con;
     private String[] array;
-    private Logger logger;
+    private final Logger logger = System.getLogger(AddPerson.class.getName());;
 
-    public AddPerson(DBConnection con, String[] array, Logger logger) {
+    public AddPerson(DBConnection con, String[] array) {
         this.con = con;
         this.array = array;
-        this.logger = logger;
     }
 
     public String run() {

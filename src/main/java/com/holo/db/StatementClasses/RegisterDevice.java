@@ -10,12 +10,11 @@ import com.holo.util.LoggerLevels;
 public class RegisterDevice implements Statement {
     private DBConnection con;
     private String[] array;
-    private Logger logger;
+    private final Logger logger = System.getLogger(RegisterDevice.class.getName());;
 
-    public RegisterDevice(DBConnection con, String[] array, Logger logger) {
+    public RegisterDevice(DBConnection con, String[] array) {
         this.con = con;
         this.array = array;
-        this.logger = logger;
     }
 
     public String run() {
