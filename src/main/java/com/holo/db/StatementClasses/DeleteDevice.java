@@ -12,13 +12,12 @@ public class DeleteDevice implements Statement {
     private DBConnection con;
     private String[] array;
     private ClientHandler ch;
-    private Logger logger;
+    private final Logger logger = System.getLogger(DeleteDevice.class.getName());;
 
-    public DeleteDevice(DBConnection con, String[] array, ClientHandler ch, Logger logger) {
+    public DeleteDevice(DBConnection con, String[] array, ClientHandler ch) {
         this.con = con;
         this.array = array;
         this.ch = ch;
-        this.logger = logger;
     }
     
     public String run() {

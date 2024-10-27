@@ -13,12 +13,11 @@ import com.holo.util.Talker;
 public class GetDevicesAll implements Statement{
     private DBConnection con;
     private Talker talker;
-    private Logger logger;
+    private final Logger logger = System.getLogger(GetDevicesAll.class.getName());;
 
-    public GetDevicesAll(DBConnection con, Talker talker, Logger logger) {
+    public GetDevicesAll(DBConnection con, Talker talker) {
         this.con = con;
         this.talker = talker;
-        this.logger = logger;
     }
 
     public String run() {

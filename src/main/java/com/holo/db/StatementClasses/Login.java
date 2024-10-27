@@ -13,13 +13,12 @@ public class Login implements Statement {
     private DBConnection con;
     private ClientHandler ch;
     private String[] array;
-    private Logger logger;
+    private final Logger logger = System.getLogger(Login.class.getName());;
 
-    public Login(DBConnection con, ClientHandler ch, String[] array, Logger logger) {
+    public Login(DBConnection con, ClientHandler ch, String[] array) {
         this.con = con;
         this.ch = ch;
         this.array = array;
-        this.logger = logger;
     }
 
     public String run() {
