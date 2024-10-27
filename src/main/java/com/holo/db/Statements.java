@@ -1,7 +1,5 @@
 package com.holo.db;
 
-import java.lang.System.Logger;
-
 import com.holo.util.Talker;
 import com.holo.db.StatementClasses.AddAuthor;
 import com.holo.db.StatementClasses.AddPerson;
@@ -24,7 +22,6 @@ import com.holo.db.StatementClasses.RentBook;
 import com.holo.db.StatementClasses.UnrentBook;
 import com.holo.db.StatementClasses.UpdateDevice;
 import com.holo.network.ClientHandler;
-import com.holo.util.LoggerLevels;
 
 /**
  * Where all the SQL statements are stored, and how to handle each case from the client
@@ -32,7 +29,6 @@ import com.holo.util.LoggerLevels;
  * @version 0.4.0
  */
 public class Statements {
-    private static final Logger logger = System.getLogger(Statements.class.getName());
 
     /**
      * Allow the server to craft the required response to the client
@@ -44,11 +40,6 @@ public class Statements {
         switch(array[0]) {
             case "LOGIN":
                 return new Login(con, ch, array).run();
-            case "LOG": {
-                logger.log(LoggerLevels.WARNING, "This is a deprecated system call - Find out why it is used");
-                logger.log(LoggerLevels.INFO, array[2] + " has logged in.");
-                return "LOG-YES";
-            }
             case "REGISTER":
                 return new Register(con, array).run();
             case "REGISTER-ACCOUNT":
