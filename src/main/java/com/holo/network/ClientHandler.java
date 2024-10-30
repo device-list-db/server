@@ -97,6 +97,15 @@ public class ClientHandler implements Runnable {
 			case "UNRENT-BOOK":
 				sendMessage(message, "Returning a book");
 				break;
+			case "DEBT-GET":
+				sendMessage(message, "Retrieving " + username + "'s debts");
+				break;
+			case "GET-USER-ID":
+				sendMessage(message, "Retrieving a user's ID");
+				break;
+			case "GET-USER-NAME":
+				sendMessage(message, "Retrieving a user's username");
+				break;
             default: // Illegal protocol message - kill the client
                 sendMessage("KILL", "Sent unrecgonized command '" + messageArray[0] + "'- Killing client");
                 ServerMain.clientDisconnect(this);

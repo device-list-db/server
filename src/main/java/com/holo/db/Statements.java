@@ -4,6 +4,7 @@ import com.holo.util.Talker;
 import com.holo.db.StatementClasses.AddAuthor;
 import com.holo.db.StatementClasses.AddPerson;
 import com.holo.db.StatementClasses.AdminResponse;
+import com.holo.db.StatementClasses.DebtGet;
 import com.holo.db.StatementClasses.DebtRegister;
 import com.holo.db.StatementClasses.DebtUpdate;
 import com.holo.db.StatementClasses.DeleteDevice;
@@ -13,6 +14,8 @@ import com.holo.db.StatementClasses.GetDevices;
 import com.holo.db.StatementClasses.GetDevicesAll;
 import com.holo.db.StatementClasses.GetPeople;
 import com.holo.db.StatementClasses.GetPerson;
+import com.holo.db.StatementClasses.GetUserId;
+import com.holo.db.StatementClasses.GetUserName;
 import com.holo.db.StatementClasses.Login;
 import com.holo.db.StatementClasses.Register;
 import com.holo.db.StatementClasses.RegisterAccount;
@@ -78,6 +81,12 @@ public class Statements {
                 return new RentBook(con, array).run();
 			case "UNRENT-BOOK":
 				return new UnrentBook(con, array).run();
+			case "DEBT-GET":
+				return new DebtGet(con, talker, ch).run();
+			case "GET-USER-ID":
+				return new GetUserId(con, array).run();
+			case "GET-USER-NAME":
+				return new GetUserName(con, array).run();
         }
         return "KILL"; // Default stance - kill client
     }

@@ -39,6 +39,7 @@ public class Login implements Statement {
                 throw new SQLException("Banned user");
             }
             logger.log(LoggerLevels.INFO, array[1] + " has logged in.");
+			ch.setUsername(array[1]);
             return "LOGIN-PASS " + rs.getString(1);
             } catch (SQLException e) {
                 return "LOGIN-PASS NULL";
