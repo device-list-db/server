@@ -38,21 +38,21 @@ public class DebtGet implements Statement {
 			ps2.setString(1, ch.getUsername().get());
 			ResultSet rs2 = con.returnResult(ps2).orElseThrow();
 			if (!rs2.next()) {
-				// Throw exception
+				throw new SQLException();
 			}
 			// Get amount owed information loaded
 			PreparedStatement ps3 = con.getConnection().get().prepareStatement("SELECT debt.amount FROM debt WHERE debt.debtee_id IN (SELECT people.id FROM people, users WHERE users.username = ? AND people.id = users.name_id)");
 			ps3.setString(1, ch.getUsername().get());
 			ResultSet rs3 = con.returnResult(ps3).orElseThrow();
 			if (!rs3.next()) {
-				// Throw exception
+				throw new SQLException();
 			}
 			// Get amount paid information loaded
 			PreparedStatement ps4 = con.getConnection().get().prepareStatement("SELECT debt.paid FROM debt WHERE debt.debtee_id IN (SELECT people.id FROM people, users WHERE users.username = ? AND people.id = users.name_id)");
 			ps4.setString(1, ch.getUsername().get());
 			ResultSet rs4 = con.returnResult(ps4).orElseThrow();
 			if (!rs4.next()) {
-				// Throw exception
+				throw new SQLException();
 			}
 			for (int i = 0; i < numTimes; i++) {
 				talker.send("USER-ID " + rs2.getInt(1));
