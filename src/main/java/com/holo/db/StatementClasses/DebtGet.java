@@ -40,28 +40,21 @@ public class DebtGet implements Statement {
 			if (!rs2.next()) {
 				throw new SQLException();
 			}
-			// Get amount owed information loaded
-			PreparedStatement ps3 = con.getConnection().get().prepareStatement("SELECT debt.amount FROM debt WHERE debt.debtee_id IN (SELECT people.id FROM people, users WHERE users.username = ? AND people.id = users.name_id)");
+			// Get amount owed, paid and memo information loaded
+			PreparedStatement ps3 = con.getConnection().get().prepareStatement("SELECT debt.amount, debt.paid, debt.memo FROM debt WHERE debt.debtee_id IN (SELECT people.id FROM people, users WHERE users.username = ? AND people.id = users.name_id)");
 			ps3.setString(1, ch.getUsername().get());
 			ResultSet rs3 = con.returnResult(ps3).orElseThrow();
 			if (!rs3.next()) {
-				throw new SQLException();
-			}
-			// Get amount paid information loaded
-			PreparedStatement ps4 = con.getConnection().get().prepareStatement("SELECT debt.paid FROM debt WHERE debt.debtee_id IN (SELECT people.id FROM people, users WHERE users.username = ? AND people.id = users.name_id)");
-			ps4.setString(1, ch.getUsername().get());
-			ResultSet rs4 = con.returnResult(ps4).orElseThrow();
-			if (!rs4.next()) {
 				throw new SQLException();
 			}
 			for (int i = 0; i < numTimes; i++) {
 				talker.send("USER-ID " + rs2.getInt(1));
 				talker.send("USER-NAME " + rs2.getString(2));
 				talker.send("DEBT-TOTAL-AMOUNT " + rs3.getDouble(1));
-				talker.send("DEBT-AMOUNT-PAID " + rs4.getDouble(1));
+				talker.send("DEBT-AMOUNT-PAID " + rs3.getDouble(2));
+				talker.send("DEBT-MEMO " + rs3.getString(3));
 				rs2.next();
 				rs3.next();
-				rs4.next();
 			}
 			return "DEBT-SUCCESS";
 		} catch (SQLException | IOException e) {
